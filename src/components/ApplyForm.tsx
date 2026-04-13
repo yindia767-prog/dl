@@ -56,10 +56,12 @@ const formSchema = z.object({
   identification_mark_2: z.string().optional(),
   
   // Step 4: Address
+  current_address_type: z.string().optional(),
   current_state_id: z.string().min(1, "State is required"),
   current_landmark: z.string().min(1, "Landmark is required"),
   current_pin: z.string().min(6, "Valid PIN is required"),
   
+  permanent_address_type: z.string().optional(),
   permanent_state_id: z.string().optional(),
   permanent_landmark: z.string().optional(),
   permanent_pin: z.string().optional(),
