@@ -44,7 +44,7 @@ const formSchema = z.object({
   }, "You must be at least 18 years old"),
   birth_place: z.string().optional(),
   birth_country: z.string().min(1, "Country of birth is required"),
-  qualification: z.string().min(1, "Qualification is required"),
+  qualification: z.string().optional(),
   blood_group: z.string().optional(),
   
   // Step 3: Contact
@@ -71,11 +71,11 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const STEPS = [
-  { id: 1, title: "Service Selection", icon: Car },
-  { id: 2, title: "Personal Details", icon: User },
-  { id: 3, title: "Contact Info", icon: AlertCircle },
-  { id: 4, title: "Address Details", icon: MapPin },
-  { id: 5, title: "Vehicle Class", icon: CheckCircle2 },
+  { id: 1, title: "Service", icon: Car },
+  { id: 2, title: "Personal", icon: User },
+  { id: 3, title: "Contact", icon: AlertCircle },
+  { id: 4, title: "Address", icon: MapPin },
+  { id: 5, title: "Vehicle", icon: CheckCircle2 },
   { id: 6, title: "Documents", icon: UploadCloud },
 ];
 
@@ -214,22 +214,22 @@ export default function ApplyForm() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 my-10">
+    <div className="max-w-4xl w-[95%] md:w-full mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 my-10">
       {/* Header / Progress */}
-      <div className="bg-[#005dbe] p-8 text-white relative">
-        <div className="relative z-10">
-          <h2 className="text-2xl font-bold font-ubuntu">Driving Licence Application</h2>
-          <p className="text-blue-100 text-sm mt-1">Complete all steps to proceed to payment</p>
+      <div className="bg-[#005dbe] p-6 md:p-8 text-white relative">
+        <div className="relative z-10 text-center md:text-left">
+          <h2 className="text-xl md:text-2xl font-bold font-ubuntu">Driving Licence Application</h2>
+          <p className="text-blue-100 text-xs md:text-sm mt-1">Complete all steps to proceed to payment</p>
         </div>
         
         {/* Step Indicator */}
-        <div className="flex justify-between mt-10 relative z-10">
+        <div className="flex justify-between mt-10 relative z-10 px-1 md:px-2">
           {STEPS.map((s) => (
-            <div key={s.id} className="flex flex-col items-center gap-2 group">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${step >= s.id ? 'bg-white text-[#005dbe] scale-110 shadow-lg' : 'bg-blue-400 text-blue-100'}`}>
-                <s.icon size={20} />
+            <div key={s.id} className="flex flex-col items-center flex-1 group">
+              <div className={`w-7 h-7 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all ${step >= s.id ? 'bg-white text-[#005dbe] scale-110 shadow-lg' : 'bg-blue-400 text-blue-100'}`}>
+                <s.icon size={14} className="md:w-5 md:h-5" />
               </div>
-              <span className={`text-[10px] font-bold uppercase tracking-wider ${step >= s.id ? 'text-white' : 'text-blue-300'}`}>
+              <span className={`mt-2 text-[6px] md:text-[9px] font-bold uppercase md:tracking-wider text-center px-0.5 break-words leading-[8px] md:leading-normal ${step >= s.id ? 'text-white' : 'text-blue-300'}`}>
                 {s.title}
               </span>
             </div>
@@ -328,11 +328,13 @@ export default function ApplyForm() {
                     <option value="Husband">Husband</option>
                     <option value="Guardian">Guardian</option>
                   </select>
+                  {errors.relation && <p className="text-xs text-red-500">{errors.relation.message}</p>}
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-700">Relative's Name</label>
                   <input {...register("full_name")} className="w-full p-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 focus:ring-2 focus:ring-[#005dbe] outline-none" />
+                  {errors.full_name && <p className="text-xs text-red-500">{errors.full_name.message}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -369,6 +371,7 @@ export default function ApplyForm() {
                     <option value="UK">UK</option>
                     <option value="OTHER">OTHER</option>
                   </select>
+                  {errors.birth_country && <p className="text-xs text-red-500">{errors.birth_country.message}</p>}
                 </div>
 
                 <div className="space-y-2">
@@ -381,6 +384,7 @@ export default function ApplyForm() {
                     <option value="POST GRADUATE">POST GRADUATE</option>
                     <option value="BELOW 8th">BELOW 8th</option>
                   </select>
+                  {errors.qualification && <p className="text-xs text-red-500">{errors.qualification.message}</p>}
                 </div>
               </div>
             </motion.div>
@@ -535,29 +539,29 @@ export default function ApplyForm() {
         </AnimatePresence>
 
         {/* Navigation Buttons */}
-        <div className="mt-12 flex justify-between border-t border-gray-100 pt-8">
+        <div className="mt-8 md:mt-12 flex justify-between border-t border-gray-100 pt-6 md:pt-8">
           <button
             type="button"
             onClick={prevStep}
-            className={`flex items-center px-6 py-3 rounded-full font-bold transition-all ${step === 1 ? 'opacity-0 cursor-default' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+            className={`flex items-center px-4 md:px-6 py-2 md:py-3 rounded-full font-bold text-xs md:text-sm transition-all ${step === 1 ? 'opacity-0 cursor-default' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
             disabled={step === 1}
           >
-            <ChevronLeft size={20} className="mr-2" /> Back
+            <ChevronLeft className="mr-1 md:mr-2 w-4 h-4 md:w-5 md:h-5" /> Back
           </button>
           
           {step < STEPS.length ? (
             <button
               type="button"
               onClick={nextStep}
-              className="flex items-center px-8 py-3 bg-[#005dbe] text-white rounded-full font-bold shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:scale-105 transition-all"
+              className="flex items-center px-5 md:px-8 py-2 md:py-3 bg-[#005dbe] text-white rounded-full font-bold text-xs md:text-sm shadow-lg shadow-blue-200 hover:shadow-blue-300 hover:scale-105 transition-all whitespace-nowrap"
             >
-              Next Step <ChevronRight size={20} className="ml-2" />
+              Next Step <ChevronRight className="ml-1 md:ml-2 w-4 h-4 md:w-5 md:h-5" />
             </button>
           ) : (
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center px-10 py-3 bg-green-600 text-white rounded-full font-bold shadow-lg shadow-green-200 hover:bg-green-700 hover:scale-105 transition-all disabled:opacity-50"
+              className="flex items-center px-6 md:px-10 py-2 md:py-3 bg-green-600 text-white rounded-full font-bold text-xs md:text-sm shadow-lg shadow-green-200 hover:bg-green-700 hover:scale-105 transition-all disabled:opacity-50 whitespace-nowrap"
             >
               {isSubmitting ? <Loader2 className="animate-spin" /> : "Proceed to Payment"}
             </button>

@@ -1,16 +1,15 @@
 import { Suspense } from "react";
-import UPIPayment from "@/components/UPIPayment";
 import { prisma } from "@/lib/prisma";
 import { Loader2 } from "lucide-react";
+import PaymentContainer from "@/components/PaymentContainer";
 
 interface PaymentPageProps {
-  searchParams: { id: string };
+  searchParams: Promise<{ id: string }>;
 }
 
 async function getApplicationData(id: string) {
   if (!id) return null;
   
-  // Fetch application to get amount if needed, though we hardcode 375 for now as per site
   const application = await prisma.formData.findUnique({
     where: { id: parseInt(id) }
   });
@@ -18,9 +17,22 @@ async function getApplicationData(id: string) {
   return application;
 }
 
-export default async function PaymentPage({ searchParams }: { searchParams: Promise<{ id: string }> }) {
+export default async function PaymentPage({ searchParams }: PaymentPageProps) {
   const { id } = await searchParams;
   const application = await getApplicationData(id);
+
+  const getPrice = (type?: string | null) => {
+    switch (type) {
+      case "Learning Licence": return 1100;
+      case "Renew Licence": return 1400;
+      case "Permanent Licence": return 1600;
+      case "Duplicate Licence": return 800;
+      case "IDP Licence": return 2500;
+      default: return 1100;
+    }
+  };
+
+  const amount = getPrice(application?.licence_type);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-12 px-4">
@@ -28,11 +40,11 @@ export default async function PaymentPage({ searchParams }: { searchParams: Prom
         <div className="text-center p-10 bg-white rounded-3xl shadow-xl">
           <h2 className="text-2xl font-bold text-red-500">Invalid Application</h2>
           <p className="text-gray-600 mt-2">The application ID provided was not found.</p>
-          <a href="/apply" className="mt-6 inline-block text-[#005dbe] font-bold">Try Applying Again</a>
+          <a href="/apply" className="mt-6 inline-block text-[#005dbe] font-bold hover:underline transition-all">Try Applying Again</a>
         </div>
       ) : (
         <Suspense fallback={<Loader2 className="animate-spin text-[#005dbe]" size={48} />}>
-          <UPIPayment amount={375} applicationId={application.id.toString()} />
+          <PaymentContainer application={application} amount={amount} />
         </Suspense>
       )}
     </div>

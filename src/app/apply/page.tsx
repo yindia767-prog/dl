@@ -8,9 +8,9 @@ export const metadata = {
 export default function ApplyPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-4">
-      <div className="max-w-4xl w-full text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 font-ubuntu">Online Application</h1>
-        <p className="text-gray-600 mt-2">Please fill in the details carefully as per your government documents.</p>
+      <div className="max-w-4xl w-full text-center mb-8 px-4">
+        <h1 className="text-2xl md:text-4xl font-bold text-gray-900 font-ubuntu">Online Application</h1>
+        <p className="text-sm md:text-base text-gray-600 mt-2">Please fill in the details carefully as per your government documents.</p>
       </div>
 
       <ApplyForm />

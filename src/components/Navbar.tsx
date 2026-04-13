@@ -17,7 +17,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex-shrink-0 flex items-center">
-            <Link href="/" className="text-2xl font-bold text-[#005dbe] font-ubuntu">
+            <Link href="/" className="text-xl md:text-2xl font-bold text-[#005dbe] font-ubuntu truncate pr-4">
               Driving Licence
             </Link>
           </div>

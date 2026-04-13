@@ -17,9 +17,10 @@ interface PaymentPageProps {
   amount: number;
   applicationId: string;
   upiId?: string;
+  onStepComplete?: () => void;
 }
 
-export default function UPIPayment({ amount = 375, applicationId, upiId = "paytmqr2810050501011508933256@paytm" }: PaymentPageProps) {
+export default function UPIPayment({ amount = 375, applicationId, upiId = "paytmqr2810050501011508933256@paytm", onStepComplete }: PaymentPageProps) {
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
   const [status, setStatus] = useState<'pending' | 'verifying' | 'success'>('pending');
 
@@ -122,21 +123,11 @@ export default function UPIPayment({ amount = 375, applicationId, upiId = "paytm
           </div>
 
           <button
-            onClick={verifyPayment}
-            disabled={status === 'verifying'}
-            className="w-full py-4 bg-[#005dbe] text-white rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-blue-700 transition-all shadow-lg active:scale-95 disabled:opacity-50"
+            onClick={() => onStepComplete?.()}
+            className="w-full py-4 bg-[#005dbe] text-white rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-blue-700 transition-all shadow-lg active:scale-95"
           >
-            {status === 'verifying' ? (
-              <>
-                <Loader2 className="animate-spin" size={20} />
-                Verifying Payment...
-              </>
-            ) : (
-              <>
-                Confirm Payment
-                <ArrowRight size={20} />
-              </>
-            )}
+            I have completed payment
+            <ArrowRight size={20} />
           </button>
         </div>
 
