@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FormData {
+  id                              Int       @id @default(autoincrement())
+  state_id                        String    @default("0") @db.VarChar(255)
+  rto_id                          String    @default("'0'") @db.VarChar(255)
+  licence_type                    String    @db.VarChar(255)
+  pin                             String?   @db.VarChar(50)
+  name                            String?   @db.Text
+  relation                        String?   @db.Text
+  full_name                       String?   @db.Text
+  gender                          String    @default("1") @db.VarChar(255)
+  birth_place                     String?   @db.Text
+  qualification                   String?   @db.Text
+  phone                           String?   @db.Text
+  mobile                          String?   @db.Text
+  identification_mark_1           String?   @db.Text
+  dob                             DateTime? @db.Date
+  birth_country                   String    @default("0") @db.VarChar(255)
+  blood_group                     String    @default("0") @db.VarChar(255)
+  email                           String?   @db.Text
+  em_mobile                       String?   @db.Text
+  identification_mark_2           String?   @db.Text
+  current_state_id                String    @default("0") @db.VarChar(255)
+  current_district_id             String    @default("0") @db.VarChar(255)
+  current_sub_district_id         String    @default("0") @db.VarChar(255)
+  current_address_type            String?   @db.Text
+  current_village_town            String?   @db.Text
+  current_house                   String?   @db.Text
+  current_street                  String?   @db.Text
+  current_landmark                String?   @db.Text
+  current_pin                     String?   @db.Text
+  present_address_duration_years  String?   @db.Text
+  present_address_duration_months String?   @db.Text
+  permanent_state_id              String    @db.VarChar(255)
+  permanent_district_id           String    @default("'0'") @db.VarChar(255)
+  permanent_sub_district_id       String    @default("'0'") @db.VarChar(255)
+  permanent_address_type          String?   @db.Text
+  permanent_village_town          String    @default("0") @db.VarChar(255)
+  permanent_house                 String?   @db.Text
+  permanent_street                String?   @db.Text
+  permanent_landmark              String?   @db.Text
+  permanent_pin                   String?   @db.Text
+  vehicle_class                   String    @db.Text
+  created_date                    DateTime? @db.Timestamp(0)
+  status                          Int       @default(0)
+  payment_id                      String    @db.VarChar(255)
+  payment_email                   String    @db.VarChar(255)
+  razorpay_signature              String    @db.VarChar(255)
+
+  @@map("form_data")
+}
+
+model State {
+  id         Int    @id
+  name       String @db.VarChar(50)
+  country_id Int
+
+  @@map("states")
+}
+
+model City {
+  id         Int     @id @default(autoincrement())
+  city_name  String? @db.VarChar(255)
+  state_name String? @db.VarChar(255)
+
+  @@map("city")
+}
+
+model Country {
+  id        Int     @id @default(autoincrement())
+  iso       String  @db.Char(2)
+  name      String  @db.VarChar(80)
+  nicename  String  @db.VarChar(80)
+  iso3      String? @db.Char(3)
+  numcode   Int?    @db.SmallInt
+  phonecode Int
+
+  @@map("country")
+}
+
+model Payment {
+  id               Int    @id @default(autoincrement())
+  email            String @db.VarChar(255)
+  item_number      String @db.VarChar(255)
+  amount           Int
+  currency_code    String @db.VarChar(255)
+  txn_id           String @db.VarChar(255)
+  payment_status   String @db.VarChar(255)
+  payment_response String @db.VarChar(255)
+
+  @@map("tbl_payment")
+}
+
+model Admin {
+  id       Int    @id @default(autoincrement())
+  username String @db.VarChar(10000)
+  password String @db.VarChar(10000)
+
+  @@map("tbl_admin")
+}
+
+model rto {
+  id       Int     @id @unique(map: "id") @default(autoincrement())
+  RegNo    String? @db.VarChar(25)
+  Place    String? @db.VarChar(103)
+  state_id Int?
+}
