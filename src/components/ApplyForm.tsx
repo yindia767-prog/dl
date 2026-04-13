@@ -182,12 +182,7 @@ export default function ApplyForm() {
     if (checked) {
       const currentValues = watch();
       setValue("permanent_state_id", currentValues.current_state_id);
-      setValue("permanent_district_id", currentValues.current_district_id);
-      setValue("permanent_sub_district_id", currentValues.current_sub_district_id);
       setValue("permanent_address_type", currentValues.current_address_type);
-      setValue("permanent_village_town", currentValues.current_village_town);
-      setValue("permanent_house", currentValues.current_house || "");
-      setValue("permanent_street", currentValues.current_street || "");
       setValue("permanent_landmark", currentValues.current_landmark);
       setValue("permanent_pin", currentValues.current_pin);
     }
