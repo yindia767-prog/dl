@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { prisma } from "@/lib/prisma";
+import { supabase } from "@/lib/supabase";
 import { Loader2 } from "lucide-react";
 import PaymentContainer from "@/components/PaymentContainer";
 
@@ -10,9 +10,16 @@ interface PaymentPageProps {
 async function getApplicationData(id: string) {
   if (!id) return null;
   
-  const application = await prisma.formData.findUnique({
-    where: { id: parseInt(id) }
-  });
+  const { data: application, error } = await supabase
+    .from('form_data')
+    .select('*')
+    .eq('id', parseInt(id))
+    .single();
+  
+  if (error) {
+    console.error('Error fetching application data:', error);
+    return null;
+  }
   
   return application;
 }

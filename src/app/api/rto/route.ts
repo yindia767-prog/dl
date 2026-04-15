@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -10,21 +10,13 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Need to find the state first to get its ID if stateId is a name, 
-    // but looking at getstates.php, it expects the ID (departid).
-    // Note: in the original SQL, state_id in RTO table is an Int.
-    const rtos = await prisma.rto.findMany({
-      where: {
-        state_id: parseInt(stateId),
-      },
-      select: {
-        RegNo: true,
-        Place: true,
-      },
-      orderBy: {
-        RegNo: 'asc',
-      },
-    });
+    const { data: rtos, error } = await supabase
+      .from('rto')
+      .select('RegNo, Place')
+      .eq('state_id', parseInt(stateId))
+      .order('RegNo', { ascending: true });
+
+    if (error) throw error;
 
     // Remap to match the expected format {id, name}
     const formattedRtos = rtos.map((rto) => ({

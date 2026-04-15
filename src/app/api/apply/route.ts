@@ -1,25 +1,21 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { DateTime } from 'luxon';
+import { supabase } from '@/lib/supabase';
 
 export async function POST(request: Request) {
   try {
     const data = await request.json();
 
-    // 1. Validation (Already done on client, but always good to have basic check here)
+    // 1. Validation
     if (!data.state_id || !data.email || !data.name) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // 2. Prepare for Prisma insertion
-    // Note: Prisma expects Date objects or ISO strings for DateTime/Date fields.
-    // vehicle_class is stored as a string in original DB (comma separated likely)
-    
+    // 2. Prepare for Supabase insertion
     const formattedData = {
       state_id: data.state_id,
       rto_id: data.rto_id,
       licence_type: data.licence_type,
-      pin: data.current_pin, // Original map uses PIN from current address often
+      pin: data.current_pin,
       name: data.name,
       relation: data.relation,
       full_name: data.full_name,
@@ -29,7 +25,7 @@ export async function POST(request: Request) {
       phone: data.phone,
       mobile: data.mobile,
       identification_mark_1: data.identification_mark_1 || '',
-      dob: data.dob ? new Date(data.dob) : null,
+      dob: data.dob || null,
       birth_country: data.birth_country || 'INDIA',
       blood_group: data.blood_group || 'None',
       email: data.email,
@@ -56,17 +52,21 @@ export async function POST(request: Request) {
       permanent_landmark: data.permanent_landmark || '',
       permanent_pin: data.permanent_pin || '',
       vehicle_class: Array.isArray(data.vehicle_class) ? data.vehicle_class.join(', ') : data.vehicle_class,
-      created_date: new Date(),
+      created_date: new Date().toISOString(),
       status: 0,
       payment_id: '',
       payment_email: data.email || '',
       razorpay_signature: '',
     };
 
-    // 3. Create record in DB
-    const newRecord = await prisma.formData.create({
-      data: formattedData as any,
-    });
+    // 3. Create record in Supabase
+    const { data: newRecord, error } = await supabase
+      .from('form_data')
+      .insert([formattedData])
+      .select()
+      .single();
+
+    if (error) throw error;
 
     return NextResponse.json({ 
       success: true, 

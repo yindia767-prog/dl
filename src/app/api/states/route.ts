@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 
 export async function GET() {
   try {
-    const states = await prisma.state.findMany({
-      orderBy: {
-        name: 'asc',
-      },
-    });
+    const { data: states, error } = await supabase
+      .from('states')
+      .select('*')
+      .order('name', { ascending: true });
+
+    if (error) throw error;
 
     return NextResponse.json(states);
   } catch (error) {

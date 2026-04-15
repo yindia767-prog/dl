@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 
 export async function POST(req: Request) {
   try {
@@ -9,10 +9,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing Required Fields' }, { status: 400 });
     }
 
-    const updatedRecord = await prisma.formData.update({
-      where: { id: parseInt(id) },
-      data: { payment_screenshot: screenshot }
-    });
+    const { data: updatedRecord, error } = await supabase
+      .from('form_data')
+      .update({ payment_screenshot: screenshot })
+      .eq('id', parseInt(id))
+      .select()
+      .single();
+
+    if (error) throw error;
 
     return NextResponse.json({ 
       success: true, 
