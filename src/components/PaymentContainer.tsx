@@ -8,9 +8,10 @@ import PaymentScreenshotUpload from "@/components/PaymentScreenshotUpload";
 interface Props {
   application: any;
   amount: number;
+  upiId: string;
 }
 
-export default function PaymentContainer({ application, amount }: Props) {
+export default function PaymentContainer({ application, amount, upiId }: Props) {
   const [hasPaid, setHasPaid] = useState(false);
 
   return (
@@ -33,6 +34,7 @@ export default function PaymentContainer({ application, amount }: Props) {
             <UPIPayment 
               amount={amount} 
               applicationId={application.id.toString()} 
+              upiId={upiId}
               onStepComplete={() => setHasPaid(true)}
             />
           </motion.div>

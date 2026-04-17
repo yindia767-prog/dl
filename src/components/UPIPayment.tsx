@@ -20,7 +20,7 @@ interface PaymentPageProps {
   onStepComplete?: () => void;
 }
 
-export default function UPIPayment({ amount = 375, applicationId, upiId = "paytmqr2810050501011508933256@paytm", onStepComplete }: PaymentPageProps) {
+export default function UPIPayment({ amount = 375, applicationId, upiId = "paytm.s1yjhpw@pty", onStepComplete }: PaymentPageProps) {
   const [timeLeft, setTimeLeft] = useState(600); // 10 minutes
   const [status, setStatus] = useState<'pending' | 'verifying' | 'success'>('pending');
 

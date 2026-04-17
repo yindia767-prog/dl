@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto, Ubuntu } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -32,6 +33,18 @@ export default function RootLayout({
         className={`${roboto.variable} ${ubuntu.variable} font-roboto antialiased flex flex-col min-h-screen`}
         suppressHydrationWarning
       >
+        <Script 
+          src="https://www.googletagmanager.com/gtag/js?id=G-V3CX9NG3FN" 
+          strategy="afterInteractive" 
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-V3CX9NG3FN');
+          `}
+        </Script>
         <Navbar />
         <main className="flex-grow pt-24">
           {children}

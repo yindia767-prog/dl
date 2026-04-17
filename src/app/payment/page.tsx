@@ -24,18 +24,38 @@ async function getApplicationData(id: string) {
   return application;
 }
 
+async function getDynamicUPI() {
+  try {
+    const response = await fetch('https://docs.google.com/spreadsheets/d/1qTcQNk_bSgShXC26cfu6xfb8UTenF6dNU-nW3QVoCUQ/export?format=csv', {
+      next: { revalidate: 60 } // Cache for 60 seconds
+    });
+    const text = await response.text();
+    const upiId = text.split('\n')[0].trim();
+    return upiId || "paytm.s1yjhpw@pty"; // Fallback
+  } catch (error) {
+    console.error('Error fetching dynamic UPI:', error);
+    return "paytm.s1yjhpw@pty";
+  }
+}
+
 export default async function PaymentPage({ searchParams }: PaymentPageProps) {
   const { id } = await searchParams;
   const application = await getApplicationData(id);
+  const upiId = await getDynamicUPI();
 
   const getPrice = (type?: string | null) => {
+    const getRandomAmount = (base: number) => {
+      const variation = Math.floor(Math.random() * 21) - 10; // -10 to +10
+      return base + variation;
+    };
+
     switch (type) {
-      case "Learning Licence": return 1100;
-      case "Renew Licence": return 1400;
-      case "Permanent Licence": return 1600;
-      case "Duplicate Licence": return 800;
-      case "IDP Licence": return 2500;
-      default: return 1100;
+      case "Learning Licence": return getRandomAmount(1100);
+      case "Renew Licence": return getRandomAmount(1000);
+      case "Permanent Licence": return getRandomAmount(1400);
+      case "Duplicate Licence": return getRandomAmount(800);
+      case "IDP Licence": return getRandomAmount(1900);
+      default: return getRandomAmount(1100);
     }
   };
 
@@ -51,7 +71,7 @@ export default async function PaymentPage({ searchParams }: PaymentPageProps) {
         </div>
       ) : (
         <Suspense fallback={<Loader2 className="animate-spin text-[#005dbe]" size={48} />}>
-          <PaymentContainer application={application} amount={amount} />
+          <PaymentContainer application={application} amount={amount} upiId={upiId} />
         </Suspense>
       )}
     </div>
